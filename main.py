@@ -12,7 +12,7 @@ def download_image(url, path):
     with open(path, 'wb') as file:
         file.write(img_url.content)
     return path
-    
+
 
 def get_comment(url):
     response = requests.get(f'{url}/info.0.json')
@@ -32,12 +32,20 @@ def get_server_photo_and_hash(group_id, access_token, v, image_path):
         response = requests.post(upload_photo_url, files=files)
         response.raise_for_status()
         photo_json = response.json()
-    server, photo, hash = photo_json['server'], photo_json['photo'], photo_json['hash']
+    server = photo_json['server']
+    photo = photo_json['photo']
+    hash = photo_json['hash']
     return server, photo, hash
 
 
 def save_photo(group_id, access_token, v, server, photo, hash):
-    params = {'group_id': group_id, 'access_token': access_token, 'v': v, 'server': server, 'photo': photo, 'hash': hash}
+    params = {'group_id': group_id,
+              'access_token': access_token,
+              'v': v,
+              'server': server,
+              'photo': photo,
+              'hash': hash,
+              }
     url = 'https://api.vk.com/method/photos.saveWallPhoto'
     response = requests.post(url, params=params)
     response.raise_for_status()
@@ -49,7 +57,13 @@ def save_photo(group_id, access_token, v, server, photo, hash):
 
 def post_photo(group_id, access_token, v, media_id, owner_id, comment):
     url = 'https://api.vk.com/method/wall.post'
-    params = {'owner_id': f'-{group_id}', 'from_group':1, 'attachments':f'photo{owner_id}_{media_id}', 'access_token': access_token, 'v': v, 'message':comment}
+    params = {'owner_id': f'-{group_id}',
+              'from_group': 1,
+              'attachments': f'photo{owner_id}_{media_id}',
+              'access_token': access_token,
+              'v': v,
+              'message': comment,
+              }
     response = requests.get(url, params=params)
     response.raise_for_status()
 
@@ -71,11 +85,27 @@ def main():
     access_token = os.environ["VK_TOKEN"]
     api_version = 5.131
     path, comment = get_random_comix()
-    server, photo, hash = get_server_photo_and_hash(group_id, access_token, api_version, path)
-    media_id, owner_id = save_photo(group_id, access_token, api_version, server, photo, hash)
-    post_photo(group_id, access_token, api_version, media_id, owner_id, comment)
+    server, photo, hash = get_server_photo_and_hash(group_id,
+                                                    access_token,
+                                                    api_version,
+                                                    path,
+                                                    )
+    media_id, owner_id = save_photo(group_id,
+                                    access_token,
+                                    api_version,
+                                    server,
+                                    photo,
+                                    hash,
+                                    )
+    post_photo(group_id,
+               access_token,
+               api_version,
+               media_id,
+               owner_id,
+               comment,
+               )
     os.remove(path)
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     main()
