@@ -43,9 +43,8 @@ def save_photo(group_id, access_token, v, server, photo, photohash):
     url = 'https://api.vk.com/method/photos.saveWallPhoto'
     response = requests.post(url, params=params)
     response.raise_for_status()
-    for i in response.json()['response']:
-        media_id = i['id']
-        owner_id = i['owner_id']
+    media_id = response.json()['response'][0]['id']
+    owner_id = response.json()['response'][0]['owner_id']
     return media_id, owner_id
 
 
