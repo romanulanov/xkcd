@@ -31,6 +31,7 @@ def upload_comix_to_vk(group_id, access_token, v, image_path):
         files = {'photo': file, }
         response = requests.post(upload_photo_url, files=files)
     response.raise_for_status()
+    vk_response(response)
     photo_json = response.json()
     server = photo_json['server']
     photo = photo_json['photo']
@@ -49,6 +50,7 @@ def save_photo(group_id, access_token, v, server, photo, photohash):
     url = 'https://api.vk.com/method/photos.saveWallPhoto'
     response = requests.post(url, params=params)
     response.raise_for_status()
+    vk_response(response)
     media_id = response.json()['response'][0]['id']
     owner_id = response.json()['response'][0]['owner_id']
     return media_id, owner_id
@@ -65,6 +67,7 @@ def post_photo(group_id, access_token, v, media_id, owner_id, comment):
               }
     response = requests.get(url, params=params)
     response.raise_for_status()
+    vk_response(response)
 
 
 def get_random_comix():
