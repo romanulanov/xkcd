@@ -66,8 +66,8 @@ def get_random_comix():
     url = 'https://xkcd.com/info.0.json'
     response = requests.get(url)
     response.raise_for_status()
-    count_comix = response.json()['num']
-    num_comix = random.randint(1, count_comix)
+    comix_count = response.json()['num']
+    num_comix = random.randint(1, comix_count)
     path, comment = download_image(f'https://xkcd.com/{num_comix}/', f'{num_comix}.jpg')
     return path, comment
 
