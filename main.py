@@ -28,17 +28,17 @@ def get_server_photo_and_hash(group_id, access_token, v, image_path):
         photo_json = response.json()
     server = photo_json['server']
     photo = photo_json['photo']
-    hash = photo_json['hash']
-    return server, photo, hash
+    photohash = photo_json['hash']
+    return server, photo, photohash
 
 
-def save_photo(group_id, access_token, v, server, photo, hash):
+def save_photo(group_id, access_token, v, server, photo, photohash):
     params = {'group_id': group_id,
               'access_token': access_token,
               'v': v,
               'server': server,
               'photo': photo,
-              'hash': hash,
+              'hash': photohash,
               }
     url = 'https://api.vk.com/method/photos.saveWallPhoto'
     response = requests.post(url, params=params)
@@ -78,7 +78,7 @@ def main():
     access_token = os.environ["VK_TOKEN"]
     api_version = 5.131
     path, comment = get_random_comix()
-    server, photo, hash = get_server_photo_and_hash(group_id,
+    server, photo, photohash = get_server_photo_and_hash(group_id,
                                                     access_token,
                                                     api_version,
                                                     path,
@@ -88,7 +88,7 @@ def main():
                                     api_version,
                                     server,
                                     photo,
-                                    hash,
+                                    photohash,
                                     )
     post_photo(group_id,
                access_token,
