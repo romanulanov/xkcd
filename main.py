@@ -20,6 +20,7 @@ def upload_comix_to_vk(group_id, access_token, v, image_path):
     url = 'https://api.vk.com/method/photos.getWallUploadServer'
     response = requests.get(url, params=params)
     response.raise_for_status()
+    print(response.text)
     upload_photo_url = response.json()['response']['upload_url']
     with open(image_path, 'rb') as file:
         files = {'photo': file, }
@@ -67,7 +68,9 @@ def get_random_comix():
     response.raise_for_status()
     comix_count = response.json()['num']
     num_comix = random.randint(1, comix_count)
-    path, comment = download_image(f'https://xkcd.com/{num_comix}/', f'{num_comix}.jpg')
+    path, comment = download_image(f'https://xkcd.com/{num_comix}/',
+                                   f'{num_comix}.jpg',
+                                   )
     return path, comment
 
 
@@ -76,13 +79,14 @@ def main():
     group_id = os.environ["GROUP_ID"]
     access_token = os.environ["VK_TOKEN"]
     api_version = 5.131
+
+    path, comment = get_random_comix()
     try:
-        path, comment = get_random_comix()
         server, photo, photohash = upload_comix_to_vk(group_id,
-                                                        access_token,
-                                                        api_version,
-                                                        path,
-                                                        )
+                                                      access_token,
+                                                      api_version,
+                                                      path,
+                                                      )
         media_id, owner_id = save_photo(group_id,
                                         access_token,
                                         api_version,
@@ -91,12 +95,12 @@ def main():
                                         photohash,
                                         )
         post_photo(group_id,
-                access_token,
-                api_version,
-                media_id,
-                owner_id,
-                comment,
-                )
+                   access_token,
+                   api_version,
+                   media_id,
+                   owner_id,
+                   comment,
+                   )
     finally:
         return os.remove(path)
 
