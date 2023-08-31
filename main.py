@@ -9,16 +9,10 @@ def download_image(url, path):
     response.raise_for_status()
     img_url = requests.get(response.json()['img'])
     img_url.raise_for_status()
+    comment = response.json()['alt']
     with open(path, 'wb') as file:
         file.write(img_url.content)
-    return path
-
-
-def get_comment(url):
-    response = requests.get(f'{url}/info.0.json')
-    response.raise_for_status()
-    comment = response.json()['alt']
-    return comment
+    return path, comment
 
 
 def get_server_photo_and_hash(group_id, access_token, v, image_path):
@@ -74,8 +68,7 @@ def get_random_comix():
     response.raise_for_status()
     count_comix = response.json()['num']
     num_comix = random.randint(1, count_comix)
-    path = download_image(f'https://xkcd.com/{num_comix}/', f'{num_comix}.jpg')
-    comment = get_comment(f'https://xkcd.com/{num_comix}/')
+    path, comment = download_image(f'https://xkcd.com/{num_comix}/', f'{num_comix}.jpg')
     return path, comment
 
 
