@@ -17,8 +17,9 @@ pip install -r requirements.txt
 pip install python-dotenv
 ```
 Он позволяет загружать переменные окружения из файла .env в корневом каталоге приложения. Проект будет использовать функцию getenv() для поиска переменной окружения GROUP_ID. Эта переменная отвечает за ID группы, в которую будут публиковаться комиксы. Узнать group_id для вашей группы можно [здесь.](https://regvk.com/id/) Также понадобится токен приложения ВК VK_TOKEN. Для этого создайте [приложение вконтакте](https://vk.com/dev) и пройдите [процедуру Implicit Flow.](https://vk.com/dev/implicit_flow_user) Для работы потребуется создать файл .env и задать в нём значение переменных GROUP_ID и VK_TOKEN, например:
-    GROUP_ID = 222461729
-    VK_TOKEN = vk1.a.ACA_8r71xAEZ5uejI3odt4tfU6mn1XAePU9b_cJMrbUE-n 
+
+    GROUP_ID=222461729
+    VK_TOKEN=vk1.a.ACA_8r71xAEZ5uejI3odt4tfU6mn1XAePU9b_cJMrbUE-n 
 
 ### Пример запуска проекта
 
