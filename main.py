@@ -15,12 +15,17 @@ def download_image(url, path):
     return path, comment
 
 
+def vk_response(response):
+    if response.json()['error']:
+        print(response.json()['error']['error_msg'])
+
+
 def upload_comix_to_vk(group_id, access_token, v, image_path):
     params = {'group_id': group_id, 'access_token': access_token, 'v': v}
     url = 'https://api.vk.com/method/photos.getWallUploadServer'
     response = requests.get(url, params=params)
     response.raise_for_status()
-    print(response.text)
+    vk_response(response)
     upload_photo_url = response.json()['response']['upload_url']
     with open(image_path, 'rb') as file:
         files = {'photo': file, }
