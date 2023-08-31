@@ -24,8 +24,8 @@ def get_server_photo_and_hash(group_id, access_token, v, image_path):
     with open(image_path, 'rb') as file:
         files = {'photo': file, }
         response = requests.post(upload_photo_url, files=files)
-        response.raise_for_status()
-        photo_json = response.json()
+    response.raise_for_status()
+    photo_json = response.json()
     server = photo_json['server']
     photo = photo_json['photo']
     photohash = photo_json['hash']
