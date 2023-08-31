@@ -15,7 +15,7 @@ def download_image(url, path):
     return path, comment
 
 
-def get_server_photo_and_hash(group_id, access_token, v, image_path):
+def upload_comix_to_vk(group_id, access_token, v, image_path):
     params = {'group_id': group_id, 'access_token': access_token, 'v': v}
     url = 'https://api.vk.com/method/photos.getWallUploadServer'
     response = requests.get(url, params=params)
@@ -77,7 +77,7 @@ def main():
     access_token = os.environ["VK_TOKEN"]
     api_version = 5.131
     path, comment = get_random_comix()
-    server, photo, photohash = get_server_photo_and_hash(group_id,
+    server, photo, photohash = upload_comix_to_vk(group_id,
                                                     access_token,
                                                     api_version,
                                                     path,
