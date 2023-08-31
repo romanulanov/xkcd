@@ -76,27 +76,29 @@ def main():
     group_id = os.environ["GROUP_ID"]
     access_token = os.environ["VK_TOKEN"]
     api_version = 5.131
-    path, comment = get_random_comix()
-    server, photo, photohash = upload_comix_to_vk(group_id,
-                                                    access_token,
-                                                    api_version,
-                                                    path,
-                                                    )
-    media_id, owner_id = save_photo(group_id,
-                                    access_token,
-                                    api_version,
-                                    server,
-                                    photo,
-                                    photohash,
-                                    )
-    post_photo(group_id,
-               access_token,
-               api_version,
-               media_id,
-               owner_id,
-               comment,
-               )
-    os.remove(path)
+    try:
+        path, comment = get_random_comix()
+        server, photo, photohash = upload_comix_to_vk(group_id,
+                                                        access_token,
+                                                        api_version,
+                                                        path,
+                                                        )
+        media_id, owner_id = save_photo(group_id,
+                                        access_token,
+                                        api_version,
+                                        server,
+                                        photo,
+                                        photohash,
+                                        )
+        post_photo(group_id,
+                access_token,
+                api_version,
+                media_id,
+                owner_id,
+                comment,
+                )
+    finally:
+        return os.remove(path)
 
 
 if __name__ == "__main__":
