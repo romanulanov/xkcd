@@ -2,6 +2,7 @@ import os
 import random
 import requests
 from dotenv import load_dotenv
+from vk_api_error import handle_vk_error
 
 
 def download_image(url, path):
@@ -15,42 +16,38 @@ def download_image(url, path):
     return path, comment
 
 
-def vk_response(response):
-    if response.json()['error']:
-        print(response.json()['error']['error_msg'])
-
-
 def upload_comix_to_vk(group_id, access_token, v, image_path):
     params = {'group_id': group_id, 'access_token': access_token, 'v': v}
     url = 'https://api.vk.com/method/photos.getWallUploadServer'
     response = requests.get(url, params=params)
     response.raise_for_status()
-    vk_response(response)
+    handle_vk_error(response.json())
+ 
     upload_photo_url = response.json()['response']['upload_url']
     with open(image_path, 'rb') as file:
         files = {'photo': file, }
         response = requests.post(upload_photo_url, files=files)
     response.raise_for_status()
-    vk_response(response)
+    handle_vk_error(response.json())
     photo_json = response.json()
     server = photo_json['server']
     photo = photo_json['photo']
-    photohash = photo_json['hash']
-    return server, photo, photohash
+    _hash = photo_json['hash']
+    return server, photo, _hash
 
 
-def save_photo(group_id, access_token, v, server, photo, photohash):
+def save_photo(group_id, access_token, v, server, photo, _hash):
     params = {'group_id': group_id,
               'access_token': access_token,
               'v': v,
               'server': server,
               'photo': photo,
-              'hash': photohash,
+              'hash': _hash,
               }
     url = 'https://api.vk.com/method/photos.saveWallPhoto'
     response = requests.post(url, params=params)
     response.raise_for_status()
-    vk_response(response)
+    handle_vk_error(response.json())
     media_id = response.json()['response'][0]['id']
     owner_id = response.json()['response'][0]['owner_id']
     return media_id, owner_id
@@ -67,7 +64,7 @@ def post_photo(group_id, access_token, v, media_id, owner_id, comment):
               }
     response = requests.get(url, params=params)
     response.raise_for_status()
-    vk_response(response)
+    handle_vk_error(response.json())
 
 
 def get_random_comix():
@@ -90,7 +87,7 @@ def main():
 
     path, comment = get_random_comix()
     try:
-        server, photo, photohash = upload_comix_to_vk(group_id,
+        server, photo, _hash = upload_comix_to_vk(group_id,
                                                       access_token,
                                                       api_version,
                                                       path,
@@ -100,7 +97,7 @@ def main():
                                         api_version,
                                         server,
                                         photo,
-                                        photohash,
+                                        _hash,
                                         )
         post_photo(group_id,
                    access_token,
