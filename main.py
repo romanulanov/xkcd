@@ -21,18 +21,20 @@ def upload_comix_to_vk(group_id, access_token, v, image_path):
     url = 'https://api.vk.com/method/photos.getWallUploadServer'
     response = requests.get(url, params=params)
     response.raise_for_status()
-    handle_vk_error(response.json())
+    response_unpacked = response.json()
+    handle_vk_error(response_unpacked)
  
     upload_photo_url = response.json()['response']['upload_url']
     with open(image_path, 'rb') as file:
         files = {'photo': file, }
         response = requests.post(upload_photo_url, files=files)
     response.raise_for_status()
-    handle_vk_error(response.json())
-    photo_json = response.json()
-    server = photo_json['server']
-    photo = photo_json['photo']
-    _hash = photo_json['hash']
+    response_unpacked = response.json()
+    handle_vk_error(response_unpacked)
+    
+    server = response_unpacked['server']
+    photo = response_unpacked['photo']
+    _hash = response_unpacked['hash']
     return server, photo, _hash
 
 
@@ -47,9 +49,10 @@ def save_photo(group_id, access_token, v, server, photo, _hash):
     url = 'https://api.vk.com/method/photos.saveWallPhoto'
     response = requests.post(url, params=params)
     response.raise_for_status()
-    handle_vk_error(response.json())
-    media_id = response.json()['response'][0]['id']
-    owner_id = response.json()['response'][0]['owner_id']
+    response_unpacked = response.json()
+    handle_vk_error(response_unpacked)
+    media_id = response_unpacked['response'][0]['id']
+    owner_id = response_unpacked['response'][0]['owner_id']
     return media_id, owner_id
 
 
@@ -64,7 +67,8 @@ def post_photo(group_id, access_token, v, media_id, owner_id, comment):
               }
     response = requests.get(url, params=params)
     response.raise_for_status()
-    handle_vk_error(response.json())
+    response_unpacked = response.json()
+    handle_vk_error(response_unpacked)
 
 
 def get_random_comix():
