@@ -2,10 +2,10 @@ class VkApiError(Exception):
     pass
 
 def handle_vk_error(response):
-    response_unpacked = response.json()
+    unpacked_response = response.json()
     if 'error' in response.keys():
         output = {
-            'code': response_unpacked['error']['error_code'],
-            'message': response_unpacked['error']['error_msg'],
+            'code': unpacked_response['error']['error_code'],
+            'message': unpacked_response['error']['error_msg'],
         }
         raise VkApiError(output)

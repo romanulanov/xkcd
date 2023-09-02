@@ -21,20 +21,20 @@ def upload_comix_to_vk(group_id, access_token, v, image_path):
     url = 'https://api.vk.com/method/photos.getWallUploadServer'
     response = requests.get(url, params=params)
     response.raise_for_status()
-    response_unpacked = response.json()
-    handle_vk_error(response_unpacked)
+    unpacked_response = response.json()
+    handle_vk_error(unpacked_response)
  
-    upload_photo_url = response.json()['response']['upload_url']
+    upload_photo_url = unpacked_response['response']['upload_url']
     with open(image_path, 'rb') as file:
         files = {'photo': file, }
         response = requests.post(upload_photo_url, files=files)
     response.raise_for_status()
-    response_unpacked = response.json()
-    handle_vk_error(response_unpacked)
+    unpacked_response = response.json()
+    handle_vk_error(unpacked_response)
     
-    server = response_unpacked['server']
-    photo = response_unpacked['photo']
-    _hash = response_unpacked['hash']
+    server = unpacked_response['server']
+    photo = unpacked_response['photo']
+    _hash = unpacked_response['hash']
     return server, photo, _hash
 
 
@@ -49,10 +49,10 @@ def save_photo(group_id, access_token, v, server, photo, _hash):
     url = 'https://api.vk.com/method/photos.saveWallPhoto'
     response = requests.post(url, params=params)
     response.raise_for_status()
-    response_unpacked = response.json()
-    handle_vk_error(response_unpacked)
-    media_id = response_unpacked['response'][0]['id']
-    owner_id = response_unpacked['response'][0]['owner_id']
+    unpacked_response = response.json()
+    handle_vk_error(unpacked_response)
+    media_id = unpacked_response['response'][0]['id']
+    owner_id = unpacked_response['response'][0]['owner_id']
     return media_id, owner_id
 
 
@@ -67,8 +67,8 @@ def post_photo(group_id, access_token, v, media_id, owner_id, comment):
               }
     response = requests.get(url, params=params)
     response.raise_for_status()
-    response_unpacked = response.json()
-    handle_vk_error(response_unpacked)
+    unpacked_response = response.json()
+    handle_vk_error(unpacked_response)
 
 
 def get_random_comix():
